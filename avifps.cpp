@@ -73,30 +73,24 @@ int main(int argc, char** argv)
 
 	std::vector<u64> nums;						// vector of numerators
 	std::vector<u64> denoms;					// vector of denominators
-
 	std::cout.precision(std::numeric_limits<double>::max_digits10);
 
 	for (int i = 1; i < argc; i++)
 	{
 		PAVIFILE pfile;
 		AVIFILEINFOW afi;
-
 		const char *file = argv[i];
-
 		AVIFileInit();
 		AVIFileOpen(&pfile, file, OF_SHARE_DENY_WRITE, 0L);
 		pfile->Info(&afi, sizeof(afi));
 
-		u64 num = afi.dwRate;
-		u64 denom = afi.dwScale;
-		u64 gcd = gcd2(num, denom);
-
+		u64 num = afi.dwRate;					// fetch fps numerator from avi
+		u64 denom = afi.dwScale;				// fetch fps denominator from avi
+		u64 gcd = gcd2(num, denom);				// reduce if possible
 		num /= gcd;
 		denom /= gcd;
-
 		nums.push_back(num);
 		denoms.push_back(denom);
-
 		double fps = (double)num / denom;
 
 		std::cout
@@ -130,7 +124,7 @@ int main(int argc, char** argv)
 	std::cout
 		<< "least common framerate:   " << fps   << std::endl
 		<< "least common numerator:   " << num   << std::endl
-		<< "least common denumerator: " << denom << std::endl
+		<< "least common denominator: " << denom << std::endl
 		<< std::endl;
 
 	std::cin.get();								// make the console persist
