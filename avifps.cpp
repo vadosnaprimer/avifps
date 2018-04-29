@@ -64,14 +64,15 @@ u64 lcmv(std::vector<u64> &v)
 
 int main(int argc, char** argv)
 {
-	std::vector<u64> nums;						// vector of numerators
-	std::vector<u64> denoms;					// vector of denominators
-
 	if (argc == 1)								// no files provided, bail
 	{
 		std::cout << "Drag'n'drop AVI files";
-		goto finish;
+		std::cin.get();							// make the console persist
+		return 0;
 	}
+
+	std::vector<u64> nums;						// vector of numerators
+	std::vector<u64> denoms;					// vector of denominators
 
 	std::cout.precision(std::numeric_limits<double>::max_digits10);
 
@@ -109,9 +110,12 @@ int main(int argc, char** argv)
 		AVIFileExit();
 
 		if (argc == 2)							// just 1 file provided, bail
-			goto finish;
+		{
+			std::cin.get();						// make the console persist
+			return 0;
+		}
 	}
-	//_asm int 3;
+	
 	u64 denom = lcmv(denoms);					// least common denominator
 
 	for (unsigned i = 0; i < nums.size(); i++)
@@ -129,8 +133,6 @@ int main(int argc, char** argv)
 		<< "least common denumerator: " << denom << std::endl
 		<< std::endl;
 
-finish:
 	std::cin.get();								// make the console persist
-
 	return 0;
 }
