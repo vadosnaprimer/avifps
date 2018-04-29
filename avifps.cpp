@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <windows.h>
 #include <vfw.h>
 
