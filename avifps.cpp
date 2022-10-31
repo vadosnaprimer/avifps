@@ -59,12 +59,12 @@ u64 lcmv(std::vector<u64> &v)
 
 
 //-------------------------------------------------------------------
-//	main - extects avi filenames
+//	main - expects avi filenames
 //-------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
-	if (argc == 1)								// no files provided, bail
+	if (argc == 1)								// no files provided
 	{
 		std::cout << "Drag'n'drop AVI files";
 		std::cin.get();							// make the console persist
@@ -78,17 +78,18 @@ int main(int argc, char** argv)
 	for (int i = 1; i < argc; i++)
 	{
 		PAVIFILE pfile;
+		PAVISTREAM pstream;
 		AVIFILEINFOW afi;
+		AVISTREAMINFO asi;
 		const char *file = argv[i];
 		AVIFileInit();
 		AVIFileOpen(&pfile, file, OF_SHARE_DENY_WRITE, 0L);
 		pfile->Info(&afi, sizeof(afi));
+		AVIFileGetStream(pfile, &pstream, streamtypeVIDEO, 0);
+        AVIStreamInfo(pstream, &asi, sizeof(asi)); 
 
-		u64 num = afi.dwRate;					// fetch fps numerator from avi
-		u64 denom = afi.dwScale;				// fetch fps denominator from avi
-		u64 gcd = gcd2(num, denom);				// reduce if possible
-		num /= gcd;
-		denom /= gcd;
+		u64 num = asi.dwRate;					// fetch fps numerator from avi
+		u64 denom = asi.dwScale;				// fetch fps denominator from avi
 		nums.push_back(num);
 		denoms.push_back(denom);
 		double fps = (double)num / denom;
@@ -103,7 +104,7 @@ int main(int argc, char** argv)
 		AVIFileRelease(pfile);
 		AVIFileExit();
 
-		if (argc == 2)							// just 1 file provided, bail
+		if (argc == 2)							// just 1 file provided
 		{
 			std::cin.get();						// make the console persist
 			return 0;
